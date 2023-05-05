@@ -69,16 +69,12 @@ write.mafSummary(maf = gbm.maf, basename = 'gbm.maf')
 
 ## Reading clinical indexed data ------------------
 
-# Dados clínicos curados
+# Filtered clinical data
 # clinical <- gbm.clinic
 # same as in data portal
 clinical <- GDCquery_clinic(project = "TCGA-GBM", type = "clinical", save.csv = FALSE)
 sort(colnames(clinical))
-
-# ERROR colnames(clinical)[1] <- "Tumor_Sample_Barcode"
 clinical$Tumor_Sample_Barcode <- clinical$bcr_patient_barcode 
-# clinical$Overall_Survival_Status <- 1
-# clinical$Overall_Survival_Status[which(clinical$vital_status == "Dead")] <- 0
 clinical$time <- clinical$days_to_death
 clinical$time[is.na(clinical$days_to_death)] <- clinical$days_to_last_follow_up[is.na(clinical$days_to_death)]
 clinical <- clinical %>%

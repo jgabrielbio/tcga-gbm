@@ -10,9 +10,7 @@ library(finalfit)
 library(tableone)
 library(rio)
 
-
-## 1. processamento de dados para salvar arquivo .csv ------
-
+## 1. Data processing to save .csv ------
 # download clinical data using the GDCquery_xxx() from TCGABiolinks
 gbm.clinical.raw <- GDCquery_clinic(project = "TCGA-GBM", type = "Clinical", save.csv = FALSE)
 
@@ -46,7 +44,7 @@ tail(gbm.clinic, 20)
 gbm.clinic <- gbm.clinic %>%
  slice(-(600:617))
 
-# Contando NAs 
+# Counting NAs 
 gbm.clinic.nas <- gbm.clinic %>%
   summarise_all(~ sum(is.na(.))) %>% # summarise_each
   pivot_longer(cols = everything(), names_to = "var", values_to = "NAs") %>% 
@@ -66,13 +64,13 @@ table(gbm.clinic$created_datetime)
 gbm.clinic <- gbm.clinic %>% 
   select(-created_datetime)
 
-# teste ID
+# ID test 
 sum(gbm.clinic$submitter_id == gbm.clinic$bcr_patient_barcode)
 teste_id <- gbm.clinic %>%
   filter(!submitter_id %in% bcr_patient_barcode)
 rm(teste_id)
 
-# Checando variaveis numericas
+# Checking numeric variables
 gbm.clinic %>%
   select(is.numeric) %>% 
   summary()
@@ -83,11 +81,11 @@ sum(gbm.clinic$days_to_diagnosis, na.rm = T)
 gbm.clinic <- gbm.clinic %>% 
   select(-days_to_diagnosis)
 
-# checar valores
+# Checking values
 sum(gbm.clinic$age_at_diagnosis %/% 365 == gbm.clinic$age_at_index, na.rm = T)
 sum(-1 * (gbm.clinic$days_to_birth %/% 365) == gbm.clinic$age_at_index, na.rm = T)
 
-# remover variaveis de id
+# Removing variables with "_id"
 gbm.clinic_id <- gbm.clinic %>%
   select((ends_with("_id")))
 gbm.clinic <- gbm.clinic %>%
@@ -104,10 +102,8 @@ gbm.clinic <- gbm.clinic %>%
 
 write_csv(gbm.clinic, "gbm.clinic.csv")
 
-
-## 2. modificando gbm.clinic para imprimir tabela ------
-
-# remover variaveis com unico valor
+## 2. modifying gbm.clinic to show table ------
+# removing variable with single value
 vars_unique <- gbm.clinic.unique %>%
   filter(unique == 1)
 gbm.clinic.table <- gbm.clinic %>%
@@ -153,7 +149,7 @@ gbm.clinic.table <- gbm.clinic.table %>%
   )
 
 
-## 3. Tabelas para dados clinicos ------
+## 3. Tables for clinical data ------
 
 # TABLE ONE
 gbm.clinic.tb1 <- gbm.clinic.table %>%

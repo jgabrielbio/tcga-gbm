@@ -1,16 +1,8 @@
-### Análise de Sobrevivência do TCGA - GBM ####
+### TCGA-GBM Survival Analysis ####
+# João Gabriel - 28/11/2022
+# Based on Datacamp Tutorial(https://www.datacamp.com/tutorial/survival-analysis-R)
 
-#Base: Datacamp (https://www.datacamp.com/tutorial/survival-analysis-R)
-
-### Anotações ----
-### Equivalências dataset survival com GBM
-### futime = days_to_last_follow_up
-### fustat = vital_status
-### patient_age = age
-### Fazer HISTOGRAMA com dados existentes transformáveis em factor no meu gbm table
-
-
-### Carregando pacotes ----
+### Loading packages ----
 library(survival)
 library(survminer)
 library(dplyr)
@@ -21,7 +13,7 @@ if(!require('survminer')) {
      library('survminer')
 }
 
-###Curva de Kaplan-Meier----
+### Kaplan-Meier ----
 gbm_clinic_surv <- gbm.clinic
 gbm_clinic_surv <- gbm_clinic_surv %>% mutate(age_group = ifelse(age >=50, "old", "young")) %>% relocate(age_group, .after = age)
 
@@ -64,9 +56,9 @@ fit6 <- survfit(surv_object ~ radiation_treatment, data = gbm_clinic_surv)
 ggsurvplot(fit6, data = gbm_clinic_surv, pval = TRUE)
 
 
-### Modelo de risco ----
+### Hazard Model ----
 
 fit_coxph <- coxph(surv_object ~ race + gender + age_group + pharmaceutical_treatment + prior_treatment + radiation_treatment, data = gbm_clinic_surv)
 
-# Risco aumentado HR>1, diminuído HR<1
+# Increased risk HR>1, decreased HR<1
 ggforest(fit_coxph, data = gbm_clinic_surv)

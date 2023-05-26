@@ -1,4 +1,4 @@
-#### TCGA-GMB Clinical Data Analysis #######
+#### TCGA-GBM Clinical Data Analysis #######
 # Beatriz Stransky - 22/04/2023
 
 
@@ -151,25 +151,10 @@ gbm.clinic.table <- gbm.clinic.table %>%
 
 ## 3. Tables for clinical data ------
 
-# TABLE ONE
-gbm.clinic.tb1 <- gbm.clinic.table %>%
-  select(-patient_id)
-
-CreateTableOne(data = gbm.clinic.tb1)
-myVars <- names(gbm.clinic.tb1)
-catVars <- names(gbm.clinic.tb1 %>%
-                   select_if(is.factor))
-
-tab1 <- CreateTableOne(vars = myVars, data = gbm.clinic.tb1, factorVars = catVars)
-print(tab1, showAllLevels = TRUE, formatOptions = list(big.mark = ","))
-
-
 # FINAL FIT
 explanatory <- gbm.clinic.table %>%
     select(-c(vital_status, patient_id)) %>%
     names
-#dependent <- 'vital_status'
- 
 clinic_descript <- gbm.clinic.table %>%
   #summary_factorlist(dependent, explanatory,
   summary_factorlist(explanatory,

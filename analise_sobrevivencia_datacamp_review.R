@@ -1,28 +1,18 @@
-### Análise de Sobrevivência do TCGA - GBM ####
+### TCGA - GBM Survival Analysis ####
+#Based on it Datacamp (https://www.datacamp.com/tutorial/survival-analysis-R)
+# João Gabriel - 26/05/23
 
-#Base: Datacamp (https://www.datacamp.com/tutorial/survival-analysis-R)
-
-### Anotações ----
-### Equivalências dataset survival com GBM
-### futime = days_to_last_follow_up
-### fustat = vital_status
-### patient_age = age
-### Fazer HISTOGRAMA com dados existentes transformáveis em factor no meu gbm table
-
-
-### Carregando pacotes ----
+### Loading packages ----
 library(survival)
 library(survminer)
 library(dplyr)
-# library(tidyverse)
-
 if(!require('survminer')) {
      install.packages('survminer')
      library('survminer')
 }
 
-###Curva de Kaplan-Meier----
-#Loading final dataset from clinical_data.R on console
+###Kaplan-Meier----
+#Loading final dataset from clinical_data.R on console, first.
 gbm_clinic_surv <- gbm.clinic.table
 gbm_clinic_surv <- gbm_clinic_surv %>% mutate(age_group = ifelse(age >=50, "old", "young")) %>% relocate(age_group, .after = age) %>% mutate(days_to_last_follow_up = gbm.clinic$days_to_last_follow_up )
 gbm_clinic_surv <- within(gbm_clinic_surv, {
@@ -33,18 +23,13 @@ gbm_clinic_surv <- within(gbm_clinic_surv, {
      prior_treatment <- factor(prior_treatment, labels = c("Yes", "No"))
      radiation_treatment <- factor(radiation_treatment, labels = c("yes", "no"))
 })
-#Utilidade da linha abaixo se foi definido os factors acima
 gbm_clinic_surv <- gbm_clinic_surv  %>%
       mutate_if(is.character, as.factor)
-
-# gbm_clinic_surv <- gbm_clinic_surv %>%
-#      drop_na()
-
 gbm_clinic_surv <- gbm_clinic_surv %>% 
      mutate(vital_status = if_else(vital_status %in% 'Dead', 1, 0))
 surv_object <- Surv(time = gbm_clinic_surv$days_to_last_follow_up, event = gbm_clinic_surv$vital_status)
 surv_object  
-# Valor p do survplot informa a significância da diferença entre os possíveis valores em uma coluna.
+
 fit1 <- survfit(surv_object ~ gender, data = gbm_clinic_surv)
 ggsurvplot(fit1, data = gbm_clinic_surv, pval = TRUE)
 
@@ -67,9 +52,9 @@ fit7 <- survfit(surv_object~1, data = gbm_clinic_surv)
 ggsurvplot(fit7, data = gbm_clinic_surv, pval = TRUE)
 
 
-### Modelo de risco ----
+### Hazard Ratio  ----
 
 fit_coxph <- coxph(surv_object ~ race + gender + age_group + pharmaceutical_treatment + prior_treatment + radiation_treatment, data = gbm_clinic_surv)
 
-# Risco aumentado HR>1, diminuído HR<1
+# Increased Risk (HR>1), Decreased HR<1
 ggforest(fit_coxph, data = gbm_clinic_surv)

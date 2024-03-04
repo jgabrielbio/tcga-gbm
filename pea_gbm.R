@@ -1,3 +1,6 @@
+# Pathway Expression Analysis on TCGA-GBM cohort
+# Based on Cluster Profile vignette - https://yulab-smu.top/biomedical-knowledge-mining-book/
+# João Gabriel - 01/03/2024
 library(clusterProfiler)
 library(DOSE)
 library(org.Hs.eg.db)

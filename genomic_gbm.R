@@ -127,8 +127,8 @@ plotOncodrive(res = gbm.maf.sig, fdrCutOff = 0.1, useFraction = TRUE, labelSize 
 gbm.pfam = pfamDomains(maf = gbm.maf, AACol = 'Amino_acids', top = 10)
 gbm.pfam$proteinSummary[,1:7, with = FALSE]
 gbm.pfam$domainSummary[,1:3, with = FALSE]
-#Survival analysis based on grouping of TTN mutation status
-mafSurvival(maf = gbm.mafclin, genes = 'PTEN', time = 'time', Status = "vital_status", isTCGA = TRUE)
+#Survival analysis based on grouping of TP53 mutation status
+mafSurvival(maf = gbm.mafclin, genes = 'TP53', time = 'time', Status = "vital_status", isTCGA = TRUE)
 
 #Using top 20 mutated genes to identify a set of genes (of size 2) to predict poor prognostic groups
 prog_geneset = survGroup(maf = gbm.mafclin, top = 10, geneSetSize = 2, time = "days_to_last_follow_up", Status = "vital_status", verbose = FALSE)

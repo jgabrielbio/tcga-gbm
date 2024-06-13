@@ -23,8 +23,10 @@ package.check <- lapply(packages_cran, FUN = function(x) {
 })
 
 rm(packages_cran, packages_bioconductor, package.check)
+#download archive below on github folder
 load("~/Pesquisa/GBM/Scripts/Dados Clínicos/clinical_final_dataset.RData")
 ## Reading gbm Maf files ---------------------------
+#download archive below on github folder
 load("~/Pesquisa/GBM/Scripts/Dados Clínicos/genomico/Genomica_Datas.RData")
 ##### Survival analysis based on grouping of PI3K mutation status ------
 gbm.clinic$Tumor_Sample_Barcode <- gbm.clinic$bcr_patient_barcode
